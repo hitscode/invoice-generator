@@ -12,9 +12,10 @@ function InvoiceModal({ show, onHide, invoiceDetails, items, currency }) {
   const generateInvoice = () => {
     const invoiceElement = document.querySelector("#invoiceCapture");
 
+    // Use a scale of 1 for clearer text rendering
     const scale = 2;
 
-    html2canvas(invoiceElement, { scale }).then((canvas) => {
+    html2canvas(invoiceElement, { scale: scale }).then((canvas) => {
       const imgData = canvas.toDataURL("image/png", 1.0);
       const pdf = new jsPDF({
         orientation: "portrait",
@@ -26,7 +27,9 @@ function InvoiceModal({ show, onHide, invoiceDetails, items, currency }) {
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      let position = 0;
+
+      pdf.addImage(imgData, "PNG", 0, position, pdfWidth, pdfHeight);
       pdf.save("invoice_challan.pdf");
     });
   };
@@ -41,8 +44,8 @@ function InvoiceModal({ show, onHide, invoiceDetails, items, currency }) {
             maxWidth: "800px",
             fontFamily: "Arial, sans-serif",
             lineHeight: "1",
-            backgroundColor: "#FFFFFF",
-            minHeight: items.length <= 11 ? "40vh" : "auto",
+            backgroundColor: "#FFFFFF", // Set background to white for printing
+            minHeight: items.length <= 11 ? "40vh" : "auto", // Fixed height for up to 11 items
           }}
         >
           <Row>
@@ -86,7 +89,11 @@ function InvoiceModal({ show, onHide, invoiceDetails, items, currency }) {
               {items.map((item, index) => (
                 <tr key={item.id}>
                   <td>{index + 1}</td>
-                  <td>{item.product}</td>
+                  <td>
+                    {item.product === "Custom"
+                      ? item.customProduct
+                      : item.product}
+                  </td>
                   <td>{item.quantity}</td>
                   <td>
                     {currency} {item.price}
@@ -96,6 +103,7 @@ function InvoiceModal({ show, onHide, invoiceDetails, items, currency }) {
                   </td>
                 </tr>
               ))}
+              {/* Add placeholders for spacing if fewer than 11 items */}
               {items.length < 11 &&
                 Array.from({ length: 11 - items.length }).map((_, idx) => (
                   <tr key={`placeholder-${idx}`}>

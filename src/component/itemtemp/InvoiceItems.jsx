@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, Form, Table } from "react-bootstrap";
 
 const defaultProducts = [
@@ -26,32 +25,30 @@ const defaultPrices = [
   26350,
   2900,
   3300,
-  0, // Default price for "Custom" is 0 or you can leave it empty
+  0, // Price for "Custom" will be manually entered
 ];
 
 function InvoiceItems({ items, setItems, currency }) {
   const handleProductChange = (e, id) => {
     const { name, value } = e.target;
-    setItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              product: value,
-              price: name === "product" ? fetchPrice(value) : item.price,
-            }
-          : item
-      )
+    const updatedItems = items.map((item) =>
+      item.id === id
+        ? {
+            ...item,
+            product: value,
+            price: value === "Custom" ? item.price : fetchPrice(value),
+          }
+        : item
     );
+    setItems(updatedItems);
   };
 
   const handleInputChange = (e, id) => {
     const { name, value } = e.target;
-    setItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, [name]: value } : item
-      )
+    const updatedItems = items.map((item) =>
+      item.id === id ? { ...item, [name]: value } : item
     );
+    setItems(updatedItems);
   };
 
   const handleRemoveItem = (id) => {
@@ -117,7 +114,7 @@ function InvoiceItems({ items, setItems, currency }) {
                 type="number"
                 name="price"
                 value={
-                  item.price !== undefined
+                  item.product === "Custom"
                     ? item.price
                     : fetchPrice(item.product)
                 }

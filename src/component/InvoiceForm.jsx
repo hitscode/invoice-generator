@@ -67,7 +67,7 @@ const customers = {
 
 function InvoiceForm() {
   const [showModal, setShowModal] = useState(false);
-  const [showSalesData, setShowSalesData] = useState(false); // New state for sales data
+  const [showSalesData, setShowSalesData] = useState(false);
   const [area, setArea] = useState("");
   const [customer, setCustomer] = useState("");
   const [invoiceNumber, setInvoiceNumber] = useState(
@@ -80,7 +80,6 @@ function InvoiceForm() {
   const [grandTotal, setGrandTotal] = useState(0);
   const [billToAddress, setBillToAddress] = useState("");
   const [billToNumber, setBillToNumber] = useState("");
-  const [notes, setNotes] = useState("");
 
   useEffect(() => {
     calculateGrandTotal();
@@ -92,7 +91,7 @@ function InvoiceForm() {
       product: "",
       quantity: 1,
       price: 0.0,
-      date: new Date().toISOString().split("T")[0], // Set the current date
+      date: new Date().toISOString().split("T")[0],
     };
     setItems([...items, newItem]);
   };
@@ -256,7 +255,7 @@ function InvoiceForm() {
               className="mt-3 ms-2"
               onClick={() => setShowSalesData(true)}
             >
-              View Today's Sales Data
+              View Today&apos;s Sales Data
             </Button>
           </Form>
           <InvoiceModal
@@ -269,7 +268,6 @@ function InvoiceForm() {
               invoiceNumber,
               currentDate: new Date(invoiceDate).toLocaleDateString(),
               grandTotal,
-              notes: `A/c Holder's Name : Nilkanth Trader\nBank Name : Akhand Anand\nA/c No : 1004201000735\nBranch & IFSC Code : Kadodara & HDFC0CAACOB`,
             }}
             items={items}
             currency="₹"
