@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import InvoiceItems from "./itemtemp/InvoiceItems";
 import InvoiceModal from "./itemtemp/InvoiceModal";
-import SalesDataModal from "./itemtemp/SalesDataModal"; // Import the new component
+import SalesDataModal from "./itemtemp/SalesDataModal";
 
 const areas = [
   "Tantithaiya",
@@ -233,6 +233,7 @@ function InvoiceForm() {
               <Col>
                 <InvoiceItems
                   items={items}
+                  setItems={setItems}
                   handleProductChange={handleProductChange}
                   handleRemoveItem={handleRemoveItem}
                   currency="₹"
@@ -240,19 +241,6 @@ function InvoiceForm() {
                 <Button variant="outline-primary" onClick={handleAddItem}>
                   Add Item
                 </Button>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Form.Group controlId="notes">
-                  <Form.Label>Firm's Bank Details</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={4}
-                    value={`A/c Holder's Name : Nilkanth Trader\nBank Name : Akhand Anand\nA/c No : 1004201000735\nBranch & IFSC Code : Kadodara & HDFC0CAACOB`}
-                    readOnly
-                  />
-                </Form.Group>
               </Col>
             </Row>
             <Row>

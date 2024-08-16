@@ -12,69 +12,66 @@ function InvoiceModal({ show, onHide, invoiceDetails, items, currency }) {
   const generateInvoice = () => {
     const invoiceElement = document.querySelector("#invoiceCapture");
 
-    html2canvas(invoiceElement).then((canvas) => {
-      const ImgData = canvas.toDataURL("image/png", 1.0);
+    const scale = 2;
+
+    html2canvas(invoiceElement, { scale }).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png", 1.0);
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "pt",
-        format: "a4", // A4 size
+        format: "a4",
       });
 
-      const imgProps = pdf.getImageProperties(ImgData);
+      const imgProps = pdf.getImageProperties(imgData);
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-      let heightLeft = pdfHeight;
-      let position = 0;
-
-      pdf.addImage(ImgData, "PNG", 0, position, pdfWidth, pdfHeight);
-      heightLeft -= pdf.internal.pageSize.getHeight();
-
-      while (heightLeft > 0) {
-        position = heightLeft - pdfHeight;
-        pdf.addPage();
-        pdf.addImage(ImgData, "PNG", 0, position, pdfWidth, pdfHeight);
-        heightLeft -= pdf.internal.pageSize.getHeight();
-      }
-
-      pdf.save("invoice.pdf");
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+      pdf.save("invoice_challan.pdf");
     });
   };
 
   return (
     <Modal show={show} onHide={onHide} size="lg">
       <Modal.Body>
-        <div id="invoiceCapture">
+        <div
+          id="invoiceCapture"
+          style={{
+            fontSize: "8pt",
+            maxWidth: "800px",
+            fontFamily: "Arial, sans-serif",
+            lineHeight: "1",
+            backgroundColor: "#FFFFFF",
+            minHeight: items.length <= 11 ? "40vh" : "auto",
+          }}
+        >
           <Row>
             <Col className="text-center">
-              <h2 className="fw-bold">NILKANTH TRADERS</h2>
-              <p>
-                MAHEK RESIDENCY VARELI SURAT 394315 24-Gujarat <br />
-                GST NO.: 24KHMPK5889Q1ZZ | PH. NO.: 8866272811, 9974454219 |
-                EMAIL: nilkanthtraders82@gmail.com
-              </p>
+              <h2 className="fw-bold" style={{ marginBottom: "0.5rem" }}>
+                Invoice Challan
+              </h2>
             </Col>
           </Row>
-          <hr />
+          <hr style={{ margin: "0.5rem 0" }} />
           <Row>
             <Col>
-              <h5>Bill To:</h5>
-              <p>
+              <h5 style={{ marginBottom: "0.5rem" }}>Bill To:</h5>
+              <p style={{ margin: 0 }}>
                 {invoiceDetails.billTo} <br />
                 {invoiceDetails.billToAddress} <br />
                 {invoiceDetails.billToNumber}
               </p>
             </Col>
             <Col>
-              <h5>Invoice Details:</h5>
-              <p>
+              <h5 style={{ marginBottom: "0.5rem" }}>Invoice Details:</h5>
+              <p style={{ margin: 0 }}>
                 Invoice Number: {invoiceDetails.invoiceNumber} <br />
                 Date: {invoiceDetails.currentDate}
               </p>
             </Col>
           </Row>
-          <hr />
-          <h5>Invoice Items:</h5>
+          <hr style={{ margin: "0.5rem 0" }} />
+          <h5 style={{ marginBottom: "0.5rem" }}>Invoice Items:</h5>
           <BootstrapTable striped bordered hover>
             <thead>
               <tr>
@@ -99,25 +96,20 @@ function InvoiceModal({ show, onHide, invoiceDetails, items, currency }) {
                   </td>
                 </tr>
               ))}
+              {items.length < 11 &&
+                Array.from({ length: 11 - items.length }).map((_, idx) => (
+                  <tr key={`placeholder-${idx}`}>
+                    <td colSpan="5" style={{ height: "2em" }}></td>
+                  </tr>
+                ))}
             </tbody>
           </BootstrapTable>
-          <hr />
+          <hr style={{ margin: "0.5rem 0" }} />
           <Row>
             <Col className="text-end">
-              <h5>
+              <h5 style={{ marginBottom: "0.5rem" }}>
                 Grand Total: {currency} {invoiceDetails.grandTotal}
               </h5>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <h5>Bank Details:</h5>
-              <p>
-                A/c Holder's Name : Nilkanth Traders <br />
-                Bank Name : Akhand Anand <br />
-                A/c No : 1004201000735 <br />
-                Branch & IFSC Code : Kadodara & HDFC0CAACOB
-              </p>
             </Col>
           </Row>
         </div>

@@ -15,12 +15,54 @@ const defaultProducts = [
   "Custom",
 ];
 
-function InvoiceItems({
-  items,
-  handleProductChange,
-  handleRemoveItem,
-  currency,
-}) {
+const defaultPrices = [
+  126,
+  190,
+  236,
+  317,
+  138,
+  81.5,
+  160,
+  26350,
+  2900,
+  3300,
+  0, // Default price for "Custom" is 0 or you can leave it empty
+];
+
+function InvoiceItems({ items, setItems, currency }) {
+  const handleProductChange = (e, id) => {
+    const { name, value } = e.target;
+    setItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              product: value,
+              price: name === "product" ? fetchPrice(value) : item.price,
+            }
+          : item
+      )
+    );
+  };
+
+  const handleInputChange = (e, id) => {
+    const { name, value } = e.target;
+    setItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === id ? { ...item, [name]: value } : item
+      )
+    );
+  };
+
+  const handleRemoveItem = (id) => {
+    setItems((prevItems) => prevItems.filter((item) => item.id !== id));
+  };
+
+  const fetchPrice = (product) => {
+    const index = defaultProducts.indexOf(product);
+    return index !== -1 ? defaultPrices[index] : 0;
+  };
+
   return (
     <Table striped bordered hover>
       <thead>
@@ -56,7 +98,7 @@ function InvoiceItems({
                   placeholder="Enter custom product name"
                   name="customProduct"
                   value={item.customProduct || ""}
-                  onChange={(e) => handleProductChange(e, item.id)}
+                  onChange={(e) => handleInputChange(e, item.id)}
                   className="mt-2"
                 />
               )}
@@ -66,7 +108,7 @@ function InvoiceItems({
                 type="number"
                 name="quantity"
                 value={item.quantity}
-                onChange={(e) => handleProductChange(e, item.id)}
+                onChange={(e) => handleInputChange(e, item.id)}
                 style={{ height: "40%", width: "100%" }}
               />
             </td>
@@ -74,8 +116,12 @@ function InvoiceItems({
               <Form.Control
                 type="number"
                 name="price"
-                value={item.price}
-                onChange={(e) => handleProductChange(e, item.id)}
+                value={
+                  item.price !== undefined
+                    ? item.price
+                    : fetchPrice(item.product)
+                }
+                onChange={(e) => handleInputChange(e, item.id)}
                 style={{ height: "40%", width: "100%" }}
               />
             </td>
