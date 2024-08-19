@@ -12,10 +12,7 @@ function InvoiceModal({ show, onHide, invoiceDetails, items, currency }) {
   const generateInvoice = () => {
     const invoiceElement = document.querySelector("#invoiceCapture");
 
-    // Use a scale of 1 for clearer text rendering
-    const scale = 2;
-
-    html2canvas(invoiceElement, { scale: scale }).then((canvas) => {
+    html2canvas(invoiceElement, { scale: 2 }).then((canvas) => {
       const imgData = canvas.toDataURL("image/png", 1.0);
       const pdf = new jsPDF({
         orientation: "portrait",
@@ -27,9 +24,7 @@ function InvoiceModal({ show, onHide, invoiceDetails, items, currency }) {
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-      let position = 0;
-
-      pdf.addImage(imgData, "PNG", 0, position, pdfWidth, pdfHeight);
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
       pdf.save("invoice_challan.pdf");
     });
   };
@@ -43,9 +38,10 @@ function InvoiceModal({ show, onHide, invoiceDetails, items, currency }) {
             fontSize: "8pt",
             maxWidth: "800px",
             fontFamily: "Arial, sans-serif",
-            lineHeight: "1",
+            lineHeight: "1.2",
             backgroundColor: "#FFFFFF", // Set background to white for printing
-            minHeight: items.length <= 11 ? "40vh" : "auto", // Fixed height for up to 11 items
+            minHeight: items.length <= 11 ? "40vh" : "auto", // Adjust height
+            overflow: "hidden", // Prevent overflow issues
           }}
         >
           <Row>
