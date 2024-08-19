@@ -1,3 +1,4 @@
+import React from "react";
 import { Button, Form, Table } from "react-bootstrap";
 
 const defaultProducts = [
@@ -30,7 +31,7 @@ const defaultPrices = [
 
 function InvoiceItems({ items, setItems, currency }) {
   const handleProductChange = (e, id) => {
-    const { name, value } = e.target;
+    const { value } = e.target;
     const updatedItems = items.map((item) =>
       item.id === id
         ? {
@@ -61,7 +62,7 @@ function InvoiceItems({ items, setItems, currency }) {
   };
 
   return (
-    <Table striped bordered hover>
+    <Table striped bordered hover responsive>
       <thead>
         <tr>
           <th>Sr/No.</th>
@@ -113,11 +114,7 @@ function InvoiceItems({ items, setItems, currency }) {
               <Form.Control
                 type="number"
                 name="price"
-                value={
-                  item.product === "Custom"
-                    ? item.price
-                    : fetchPrice(item.product)
-                }
+                value={item.price}
                 onChange={(e) => handleInputChange(e, item.id)}
                 style={{ height: "40%", width: "100%" }}
               />
